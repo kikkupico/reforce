@@ -1,0 +1,21 @@
+{
+  "name": "reforce",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "d3-force": "^1.1.0"
+  },
+  "devDependencies": {
+    "react-scripts": "1.1.1"    
+  },
+  "peerDependencies": {    
+    "react": ">15.0.0",
+    "react-dom": ">15.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
