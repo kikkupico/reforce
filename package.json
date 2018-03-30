@@ -1,6 +1,6 @@
 {
   "name": "reforce",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "lib/index.js",
   "repository": "https://github.com/vramakin/reforce.git",
   "author": "Ram",
@@ -32,8 +32,8 @@
     "webpack-cli": "^2.0.13"
   },
   "peerDependencies": {
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   },
   "dependencies": {
     "d3-force": "^1.1.0"

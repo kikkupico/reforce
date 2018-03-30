@@ -15,7 +15,7 @@ const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.c
 export default class ReForce extends React.Component {
     constructor(props) {
       super(props)
-      this.state = state = {
+      this.state = {
         nodes: [],
         links: [],
       }
