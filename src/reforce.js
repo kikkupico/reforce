@@ -10,7 +10,7 @@ const DefaultLinkComponent = props => <line
             strokeWidth="0.5"
             />
 
-const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.color, borderRadius: '50%', width: `${props.node.r*2}px`, height: `${props.node.r*2}px`}} />
+const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.color, borderRadius: '50%', width: `${props.node.size}px`, height: `${props.node.size}px`}} />
 
 export default class ReForce extends React.Component {
     state = {
@@ -18,9 +18,9 @@ export default class ReForce extends React.Component {
         links: [],
     }
 
-    componentWillMount() {    	
+    componentDidMount() {    	
         this.setState({ nodes: this.props.nodes, links: this.props.links }, () => {        
-            this.force = d3.forceSimulation(this.state.nodes)
+            this.simulation = d3.forceSimulation(this.state.nodes)
                 .force("charge",
                     d3.forceManyBody()
                     .strength(this.props.forceStrength)
@@ -29,10 +29,11 @@ export default class ReForce extends React.Component {
                     d3.forceLink().distance(this.props.linkDistance).links(this.state.links)
                 )
                 .force("x", d3.forceX(this.props.width / 2))
-                .force("y", d3.forceY(this.props.height / 2));
+                .force("y", d3.forceY(this.props.height / 2))
+                .force('collision', d3.forceCollide().radius(node => node.size/2)
+                  );
 
-
-            this.force.on('tick', () => this.setState({
+            this.simulation.on('tick', () => this.setState({
                 links: this.state.links,
                 nodes: this.state.nodes
             }))
@@ -44,27 +45,19 @@ export default class ReForce extends React.Component {
       <div style={{position:"relative", width:`${this.props.width}px`, height:`${this.props.height}px`, overflow:"hidden"}}>
       <svg width={`${this.props.width}px`} height={`${this.props.height}px`} style={{position:"absolute"}}>
       {this.state.links.map((link, index) =>
-        {
-          if(this.props.linkComponent) {
-            let newLinkComponent = Object.assign({}, this.props.linkComponent)
-            newLinkComponent.props = {link:link, key:`link-index`, ...this.props.linkComponent.props}          
-            return newLinkComponent
-          }
-          else return <DefaultLinkComponent link={link} key={`link-index`} />
-        }
-            )
+        React.cloneElement(this.props.linkComponent ? this.props.linkComponent:<DefaultLinkComponent />, {link:link, key:`link-${index}`})        
+        )
       }
       </svg>
       <div style={{position:"absolute"}}>      
       {
-        this.state.nodes.map((node, index) => {
-          if(this.props.nodeComponent) {
-            let newNodeComponent = Object.assign({}, this.props.nodeComponent)
-            newNodeComponent.props = {node:node, key:index, ...this.props.nodeComponent.props}          
-            return <div style={{ position:'absolute', top:node.y-node.r, left:node.x-node.r}}>{newNodeComponent}</div>
+        this.state.nodes.map((node, index) => 
+          <div style={{ position:'absolute', top:node.y-node.size/2, left:node.x-node.size/2}}>
+          {            
+            React.cloneElement(this.props.nodeComponent?this.props.nodeComponent:<DefaultNodeComponent />, {node:node, key:index})
           }
-          else return <div style={{ position:'absolute', top:node.y-node.r, left:node.x-node.r}}><DefaultNodeComponent node={node} key={index} /></div>
-        })
+          </div>
+        )
       }      
       </div>
       </div>
