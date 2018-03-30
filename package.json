@@ -1,21 +1,41 @@
 {
   "name": "reforce",
-  "version": "0.1.0",
-  "private": false,
+  "version": "0.2.0",
+  "main": "lib/index.js",
+  "repository": "https://github.com/vramakin/reforce.git",
+  "author": "Ram",
+  "scripts": {
+    "watch": "cross-env NODE_ENV=development webpack -w",
+    "build:dev": "cross-env NODE_ENV=development webpack",
+    "build:production": "cross-env NODE_ENV=production webpack -p"
+  },
+  "keywords": [
+    "force layout",
+    "network diagram",
+    "nodes",
+    "links",
+    "directed graph",
+    "undirected graph"
+  ],
+  "license": "MIT",
+  "devDependencies": {    
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",    
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-react": "^6.24.1",    
+    "cross-env": "^5.1.4",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13"
+  },
+  "peerDependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  },
   "dependencies": {
     "d3-force": "^1.1.0"
-  },
-  "devDependencies": {
-    "react-scripts": "1.1.1"    
-  },
-  "peerDependencies": {    
-    "react": ">15.0.0",
-    "react-dom": ">15.0.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
   }
 }
