@@ -12,14 +12,32 @@ const DefaultLinkComponent = props => <line
 
 const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.color, borderRadius: '50%', width: `${props.node.size}px`, height: `${props.node.size}px`}} />
 
-export default class ReForce extends React.Component {
+const ReForceWrapper = props => <ReForce nodes={props.nodes} links={props.links} timestamp={Date.now()} />
+
+class ReForce extends React.Component {
     state = {
         nodes: [],
         links: [],
     }
 
-    componentDidMount() {    	
-        this.setState({ nodes: this.props.nodes, links: this.props.links }, () => {        
+    componentDidMount() {
+      this.startSimulation(this.props.nodes, this.props.links)
+    }
+
+    componentDidUpdate (prevProps, prevState) {
+      if(prevProps.timestamp !== this.props.timestamp)
+        this.startSimulation(this.props.nodes, this.props.links)      
+    }
+
+    componentWillUnmount() {
+      this.simulation && this.simulation.stop();
+    }
+
+    startSimulation = (nodes, links) => {
+      
+      this.simulation && this.simulation.stop();
+
+      this.setState({ nodes: nodes, links: links }, () => {        
             this.simulation = d3.forceSimulation(this.state.nodes)
                 .force("charge",
                     d3.forceManyBody()
@@ -52,9 +70,9 @@ export default class ReForce extends React.Component {
       <div style={{position:"absolute"}}>      
       {
         this.state.nodes.map((node, index) => 
-          <div style={{ position:'absolute', top:node.y-node.size/2, left:node.x-node.size/2}}>
+          <div style={{ position:'absolute', top:node.y-node.size/2, left:node.x-node.size/2}} key={index}>
           {            
-            React.cloneElement(this.props.nodeComponent?this.props.nodeComponent:<DefaultNodeComponent />, {node:node, key:index})
+            React.cloneElement(this.props.nodeComponent?this.props.nodeComponent:<DefaultNodeComponent />, {node:node})
           }
           </div>
         )
@@ -71,3 +89,5 @@ ReForce.defaultProps = {
   linkDistance: 70,
   forceStrength: -300
 };
+
+export default ReForceWrapper
