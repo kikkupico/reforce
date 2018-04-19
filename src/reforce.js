@@ -12,28 +12,18 @@ const DefaultLinkComponent = props => <line
 
 const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.color, borderRadius: '50%', width: `${props.node.size}px`, height: `${props.node.size}px`}} />
 
-const ReForceWrapper = props => <ReForce nodes={props.nodes} links={props.links} timestamp={Date.now()} />
+const ReForceWrapper = props => <ReForce {...props} timestamp={Date.now()} />
 
 class ReForce extends React.Component {
-    state = {
+    
+    constructor(props) {
+      super(props)
+      this.state = {
         nodes: [],
         links: [],
-    }
+      }
 
-    componentDidMount() {
-      this.startSimulation(this.props.nodes, this.props.links)
-    }
-
-    componentDidUpdate (prevProps, prevState) {
-      if(prevProps.timestamp !== this.props.timestamp)
-        this.startSimulation(this.props.nodes, this.props.links)      
-    }
-
-    componentWillUnmount() {
-      this.simulation && this.simulation.stop();
-    }
-
-    startSimulation = (nodes, links) => {
+      this.startSimulation = (nodes, links) => {
       
       this.simulation && this.simulation.stop();
 
@@ -56,10 +46,24 @@ class ReForce extends React.Component {
                 nodes: this.state.nodes
             }))
         })
+      }
     }
 
+    componentDidMount() {
+      this.startSimulation(this.props.nodes, this.props.links)
+    }
+
+    componentDidUpdate (prevProps, prevState) {
+      if(prevProps.timestamp !== this.props.timestamp)
+        this.startSimulation(this.props.nodes, this.props.links)      
+    }
+
+    componentWillUnmount() {
+      this.simulation && this.simulation.stop();
+    }    
+
     render() {
-    	return (
+      return (
       <div style={{position:"relative", width:`${this.props.width}px`, height:`${this.props.height}px`, overflow:"hidden"}}>
       <svg width={`${this.props.width}px`} height={`${this.props.height}px`} style={{position:"absolute"}}>
       {this.state.links.map((link, index) =>
