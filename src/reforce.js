@@ -12,9 +12,7 @@ const DefaultLinkComponent = props => <line
 
 const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.color, borderRadius: '50%', width: `${props.node.size}px`, height: `${props.node.size}px`}} />
 
-const ReForceWrapper = props => <ReForce {...props} timestamp={Date.now()} />
-
-class ReForce extends React.Component {
+export default class ReForce extends React.Component {
     
     constructor(props) {
       super(props)
@@ -27,7 +25,7 @@ class ReForce extends React.Component {
       
       this.simulation && this.simulation.stop();
 
-      this.setState({ nodes: nodes, links: links }, () => {        
+      this.setState({ nodes: nodes.map(n=>{return Object.assign({},n)}), links: links.map(l=>{return Object.assign({},l)})}, () => {        
             this.simulation = d3.forceSimulation(this.state.nodes)
                 .force("charge",
                     d3.forceManyBody()
@@ -49,13 +47,15 @@ class ReForce extends React.Component {
       }
     }
 
-    componentDidMount() {
-      this.startSimulation(this.props.nodes, this.props.links)
+    componentWillReceiveProps(nextProps) {    
+    if(JSON.stringify(this.props.nodes)!==JSON.stringify(nextProps.nodes) || JSON.stringify(this.props.links)!==JSON.stringify(nextProps.links))
+    {      
+      this.startSimulation(nextProps.nodes, nextProps.links)
+    }
     }
 
-    componentDidUpdate (prevProps, prevState) {
-      if(prevProps.timestamp !== this.props.timestamp)
-        this.startSimulation(this.props.nodes, this.props.links)      
+    componentDidMount() {
+      this.startSimulation(this.props.nodes, this.props.links)
     }
 
     componentWillUnmount() {
@@ -93,5 +93,3 @@ ReForce.defaultProps = {
   linkDistance: 70,
   forceStrength: -300
 };
-
-export default ReForceWrapper
