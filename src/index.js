@@ -13,16 +13,19 @@ const DefaultLinkComponent = props => <line
 const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.color, borderRadius: '50%', width: `${props.node.size}px`, height: `${props.node.size}px`}} />
 
 export default class ReForce extends React.Component {
+    
     constructor(props) {
       super(props)
       this.state = {
         nodes: [],
         links: [],
       }
-    }
-    
-    componentDidMount() {    	
-        this.setState({ nodes: this.props.nodes, links: this.props.links }, () => {        
+
+      this.startSimulation = (nodes, links) => {
+      
+      this.simulation && this.simulation.stop();
+
+      this.setState({ nodes: nodes.map(n=>{return Object.assign({},n)}), links: links.map(l=>{return Object.assign({},l)})}, () => {        
             this.simulation = d3.forceSimulation(this.state.nodes)
                 .force("charge",
                     d3.forceManyBody()
@@ -41,10 +44,26 @@ export default class ReForce extends React.Component {
                 nodes: this.state.nodes
             }))
         })
+      }
     }
 
+    componentWillReceiveProps(nextProps) {    
+    if(JSON.stringify(this.props.nodes)!==JSON.stringify(nextProps.nodes) || JSON.stringify(this.props.links)!==JSON.stringify(nextProps.links))
+    {      
+      this.startSimulation(nextProps.nodes, nextProps.links)
+    }
+    }
+
+    componentDidMount() {
+      this.startSimulation(this.props.nodes, this.props.links)
+    }
+
+    componentWillUnmount() {
+      this.simulation && this.simulation.stop();
+    }    
+
     render() {
-    	return (
+      return (
       <div style={{position:"relative", width:`${this.props.width}px`, height:`${this.props.height}px`, overflow:"hidden"}}>
       <svg width={`${this.props.width}px`} height={`${this.props.height}px`} style={{position:"absolute"}}>
       {this.state.links.map((link, index) =>
@@ -55,9 +74,9 @@ export default class ReForce extends React.Component {
       <div style={{position:"absolute"}}>      
       {
         this.state.nodes.map((node, index) => 
-          <div style={{ position:'absolute', top:node.y-node.size/2, left:node.x-node.size/2}}>
+          <div style={{ position:'absolute', top:node.y-node.size/2, left:node.x-node.size/2}} key={index}>
           {            
-            React.cloneElement(this.props.nodeComponent?this.props.nodeComponent:<DefaultNodeComponent />, {node:node, key:index})
+            React.cloneElement(this.props.nodeComponent?this.props.nodeComponent:<DefaultNodeComponent />, {node:node})
           }
           </div>
         )
