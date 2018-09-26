@@ -18,7 +18,7 @@ import ReForce from 'reforce'
 
 class NetworkGraph extends React.Component {
 	state = {
-		nodes:[{id:1, size:10}], {id:2, size:10}, {id:3, size:10}]],
+		nodes:[{id:1, size:10}, {id:2, size:10}, {id:3, size:10}],
 		links:[{source:1, target:2}]
 	}
 
