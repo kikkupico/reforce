@@ -10,7 +10,7 @@ const DefaultLinkComponent = props => <line
             strokeWidth="0.5"
             />
 
-const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.color, borderRadius: '50%', width: `${props.node.size}px`, height: `${props.node.size}px`}} />
+const DefaultNodeComponent = props => <div style={{ backgroundColor:props.node.color||'#777', borderRadius: '50%', width: `${props.node.size}px`, height: `${props.node.size}px`}} />
 
 export default class ReForce extends React.Component {
     
@@ -32,7 +32,10 @@ export default class ReForce extends React.Component {
                     .strength(this.props.forceStrength)
                 )
                 .force("link",
-                    d3.forceLink().distance(this.props.linkDistance).links(this.state.links)
+                    d3.forceLink()
+                    .id(d=>d.id)
+                    .distance(this.props.linkDistance)
+                    .links(this.state.links)
                 )
                 .force("x", d3.forceX(this.props.width / 2))
                 .force("y", d3.forceY(this.props.height / 2))
